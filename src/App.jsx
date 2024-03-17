@@ -1,48 +1,54 @@
-import React, { useState } from 'react';
+import { useState } from "react";
+import "./App.css";
 
-const XDictionary = () => {
-  // Initialize dictionary state
-  const [dictionary] = useState([
-    { word: "React", meaning: "A JavaScript library for building user interfaces." },
-    { word: "Component", meaning: "A reusable building block in React." },
-    { word: "State", meaning: "An object that stores data for a component." }
-  ]);
+const wordDictionary = [
+  {
+    word: "React",
+    meaning: "A JavaScript library for building user interfaces.",
+  },
+  { word: "Component", meaning: "A reusable building block in React." },
+  { word: "State", meaning: "An object that stores data for a component." },
+];
 
-  // Initialize search term state
-  const [searchTerm, setSearchTerm] = useState('');
-  // Initialize definition state
-  const [definition, setDefinition] = useState('');
+function App() {
+  const [text, setText] = useState("");
+  const [isSubmit, setSubmit] = useState(false);
+  const [meaning, setMeaning] = useState("");
 
-  // Function to handle search
-  const handleSearch = () => {
-    // Normalize search term to lowercase
-    const normalizedSearchTerm = searchTerm.toLowerCase();
-    // Find the word in the dictionary
-    const foundWord = dictionary.find(entry => entry.word.toLowerCase() === normalizedSearchTerm);
-    // If the word is found, set the definition
-    if (foundWord) {
-      setDefinition(foundWord.meaning);
+  const handleSubmit = () => {
+    const wordMeaning = wordDictionary.filter((cur) => {
+      if (cur.word.toLowerCase() === text.toLowerCase()) {
+        return cur;
+      }
+    });
+
+    if (wordMeaning.length !== 0) {
+      setSubmit(false);
+      setMeaning(wordMeaning[0]["meaning"]);
     } else {
-      // If the word is not found, display "Word not found in the dictionary."
-      setDefinition("Word not found in the dictionary.");
+      setMeaning("");
+      setSubmit(true);
     }
   };
 
   return (
     <div>
-      <h1>XDictionary</h1>
-      <div>
+      <h1>Dictionary App</h1>
+      <div className="input--box">
         <input
           type="text"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="Enter search term..."
+          placeholder="Search for a word..."
+          value={text}
+          onChange={(e) => setText(e.target.value)}
         />
-        <button onClick={handleSearch}>Search</button>
+        <button onClick={handleSubmit}>Search</button>
       </div>
-      <p>{definition}</p>
+
+      <h2>Definition:</h2>
+      {meaning.length !== 0 && <p>{meaning}</p>}
+      {isSubmit && <p>Word not found in the dictionary.</p>}
     </div>
   );
-};
+}
 
-export default XDictionary;
+export default App;
